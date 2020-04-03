@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Text Editing</string>
+    <string name="editText_hint">Enter your Text</string>
+    <string name="navigationButton_label">Navigate</string>
+</resources>
