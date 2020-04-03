@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Login</string>
+    <string name="login_button_label">Login</string>
+    <string name="login_hint">E-Mail</string>
+    <string name="password_hint">Password</string>
+</resources>
