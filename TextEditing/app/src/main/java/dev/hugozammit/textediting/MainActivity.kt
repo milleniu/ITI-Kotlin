@@ -8,20 +8,20 @@ import android.widget.EditText
 
 class MainActivity : AppCompatActivity() {
 
-    private var textTv: EditText? = null
+    private lateinit var editText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        textTv = findViewById(R.id.editText)
+        editText = findViewById(R.id.editText)
     }
 
     fun onNavigationButtonClick(view: View) {
         val intent = Intent(this, DisplayTextActivity::class.java)
 
-        val text = textTv!!.text.toString()
-        intent.putExtra(Constants.text(), if (text.isEmpty()) null else text)
+        val text = editText!!.text.toString()
+        intent.putExtra(Constants.INTENT_EXTRA_TEXT, if (text.isNullOrBlank()) null else text)
 
         startActivity(intent)
     }

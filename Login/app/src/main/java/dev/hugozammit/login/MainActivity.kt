@@ -1,77 +1,68 @@
 package dev.hugozammit.login
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import dev.hugozammit.login.SharedPreferencesHelper.get
+import dev.hugozammit.login.SharedPreferencesHelper.set
 
 class MainActivity : AppCompatActivity() {
 
-    private var loginTextEdit: EditText? = null
-    private var passwordTextEdit: EditText? = null
+    private lateinit var usernameTextEdit: EditText
+    private lateinit var passwordTextEdit: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loginTextEdit = findViewById(R.id.editText_login)
+        usernameTextEdit = findViewById(R.id.editText_login)
         passwordTextEdit = findViewById(R.id.editText_password)
 
-        var (userName, userPassword) = restoreFromCache()
-        loginTextEdit!!.setText(userName)
-        passwordTextEdit!!.setText(userPassword)
+        val sharedPreferences = SharedPreferencesHelper.defaultPreferences(this, Constants.SHARED_PREFERENCES_USER_DATA)
+        val userName: String = sharedPreferences[Constants.SHARED_PREFERENCES_USERNAME] ?: ""
+        val userPassword: String = sharedPreferences[Constants.SHARED_PREFERENCES_PASSWORD] ?: ""
+
+        usernameTextEdit.setText(userName)
+        passwordTextEdit.setText(userPassword)
     }
 
     fun onLogin(view: View) {
-        val userName = loginTextEdit!!.text.toString()
-        val userPassword = passwordTextEdit!!.text.toString()
+        val username = usernameTextEdit.text.toString()
+        val password = passwordTextEdit.text.toString()
 
-        if( userName.isEmpty() ) {
-            loginTextEdit!!.error = "Please enter your email"
+        val usernameValidationError = validateUsername(username)
+        val passwordValidationError = validatePassword(password)
+
+        usernameTextEdit.error = usernameValidationError
+        passwordTextEdit.error = passwordValidationError
+
+        if( usernameValidationError != null || passwordValidationError != null )
             return
-        } else if( !Patterns.EMAIL_ADDRESS.matcher((userName)).matches() ) {
-            loginTextEdit!!.error = "Please enter a valid email address"
-            return
-        } else {
-            loginTextEdit!!.error = null
-        }
 
-        if( userPassword.isEmpty() ) {
-            passwordTextEdit!!.error = "Please enter your password"
-            return
-        } else {
-            passwordTextEdit!!.error = null
-        }
+        val sharedPreferences = SharedPreferencesHelper.defaultPreferences(this, Constants.SHARED_PREFERENCES_USER_DATA)
+        sharedPreferences[Constants.SHARED_PREFERENCES_USERNAME] = username
+        sharedPreferences[Constants.SHARED_PREFERENCES_PASSWORD] = password
 
-        saveToCache(Pair(userName, userPassword))
-
-        val toastContent = "E-Mail / Password saved"
-        val toastDuration = Toast.LENGTH_SHORT
-        Toast.makeText(applicationContext, toastContent, toastDuration).show()
+        Toast.makeText(applicationContext, getString(R.string.login_toast_content), Toast.LENGTH_SHORT).show()
     }
 
-    private val sharedPreferencesName = "UserData";
-    private val sharedPreferencesUserName = "username";
-    private val sharedPreferencesPassword = "password";
+    private fun validateUsername(userName: String): String? {
+        if( userName.isEmpty() )
+            return getString(R.string.login_validation_missing)
 
-    private fun saveToCache(userInfo: Pair<String, String>) {
-        val (userName, userPassword) = userInfo;
-        val sharedPreferences = getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
+        if( !Patterns.EMAIL_ADDRESS.matcher((userName)).matches() )
+            return getString(R.string.login_validation_invalid)
 
-        val editor = sharedPreferences.edit()
-        editor.putString(sharedPreferencesUserName, userName)
-        editor.putString(sharedPreferencesPassword, userPassword)
-        editor.commit()
+        return null
     }
 
-    private fun restoreFromCache(): Pair<String, String> {
-        val sharedPreferences = getSharedPreferences(sharedPreferencesName, Context.MODE_PRIVATE)
-        val userName = sharedPreferences.getString(sharedPreferencesUserName, "")!!
-        val userPassword = sharedPreferences.getString(sharedPreferencesPassword, "")!!
+    private fun validatePassword(password: String): String? {
+        if( password.isEmpty() )
+            return getString(R.string.password_validation_missing)
 
-        return Pair( userName, userPassword )
+        return null;
     }
 }

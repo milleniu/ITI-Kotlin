@@ -2,6 +2,6 @@ package dev.hugozammit.textediting
 
 class Constants {
     companion object IntentExtra {
-        fun text(): String = "TEXT"
+        const val INTENT_EXTRA_TEXT = "TEXT"
     }
 }
