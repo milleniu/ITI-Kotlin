@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Login</string>
+
     <string name="login_button_label">Login</string>
     <string name="login_hint">E-Mail</string>
+    <string name="login_validation_missing">Please enter your email</string>
+    <string name="login_validation_invalid">Please enter a valid email address</string>
+
     <string name="password_hint">Password</string>
+    <string name="password_validation_missing">Please enter your password</string>
+
+    <string name="login_toast_content">Username and Password saved!</string>
 </resources>
