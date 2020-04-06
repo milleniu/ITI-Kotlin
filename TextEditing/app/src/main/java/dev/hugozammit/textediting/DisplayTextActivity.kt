@@ -10,8 +10,8 @@ class DisplayTextActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_display_text)
 
-        val text = intent.getStringExtra(Constants.text())
-        val displayText = if (text is String) text else "No text provided"
+        val text = intent.getStringExtra(Constants.INTENT_EXTRA_TEXT)
+        val displayText = text ?: getString(R.string.editText_default)
 
         findViewById<TextView>(R.id.textView)!!.text = displayText
     }
