@@ -1,7 +1,6 @@
 package dev.hugozammit.mvvm.view
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import dev.hugozammit.mvvm.R
 

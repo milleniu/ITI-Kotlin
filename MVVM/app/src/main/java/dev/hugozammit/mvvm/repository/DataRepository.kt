@@ -2,6 +2,7 @@ package dev.hugozammit.mvvm.repository
 
 import dev.hugozammit.mvvm.NetworkAPI
 import dev.hugozammit.mvvm.model.ProductFamily
+import org.koin.core.Koin
 import retrofit2.Call
 import retrofit2.Response
 

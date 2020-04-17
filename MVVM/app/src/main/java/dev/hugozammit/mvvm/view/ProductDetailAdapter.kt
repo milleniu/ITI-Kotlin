@@ -27,8 +27,7 @@ class ProductDetailAdapter(private val productFamily: ProductFamily)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.name?.text = productFamily.products[position].name
         viewHolder.count?.text = productFamily.products[position].description
-        val imageUrl =
-            "http://mobcategories.s3-website-eu-west-1.amazonaws.com" + productFamily.products[position].url
+        val imageUrl = "http://mobcategories.s3-website-eu-west-1.amazonaws.com" + productFamily.products[position].url
         Glide.with(viewHolder.imageView.context).load(imageUrl).into(viewHolder.imageView)
     }
 
