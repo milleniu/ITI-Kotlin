@@ -7,7 +7,6 @@ import dev.hugozammit.mvvm.repository.DataRepository
 import org.koin.standalone.KoinComponent
 
 class ProductViewModel(private val dataRepository: DataRepository) : ViewModel(), KoinComponent {
-
     var listOfProducts = MutableLiveData<List<ProductFamily>>()
 
     init {
@@ -16,7 +15,6 @@ class ProductViewModel(private val dataRepository: DataRepository) : ViewModel()
 
     fun getProducts() {
         dataRepository.getProducts(object : DataRepository.OnProductData {
-
             override fun onSuccess(data: List<ProductFamily>) {
                 listOfProducts.value = data
             }
@@ -24,5 +22,4 @@ class ProductViewModel(private val dataRepository: DataRepository) : ViewModel()
             override fun onFailure() {}
         })
     }
-
 }

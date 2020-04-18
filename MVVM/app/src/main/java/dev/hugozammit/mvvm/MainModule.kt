@@ -9,14 +9,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 val mainModule = module {
-
     single { DataRepository( get() ) }
     single { createWebService() }
     viewModel { ProductViewModel( get() ) }
 }
 
 fun createWebService(): NetworkAPI {
-
     val retrofit = Retrofit.Builder()
         .addConverterFactory( GsonConverterFactory.create() )
         .addCallAdapterFactory( RxJava2CallAdapterFactory.create() )
