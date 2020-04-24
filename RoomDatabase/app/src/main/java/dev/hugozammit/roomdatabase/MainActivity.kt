@@ -2,12 +2,9 @@ package dev.hugozammit.roomdatabase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log.d
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
-import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.random.Random
 
@@ -26,8 +23,8 @@ class MainActivity : AppCompatActivity() {
 
         // Register a new user every time we start the app
         val newFriend = Friend(
-            firstName = UUID.randomUUID().toString(),
-            rating = Random.Default.nextInt(10000)
+            firstName = UUID.randomUUID().toString().slice(0..12 ),
+            rating = 0
         )
         database.friendDao().insertFriend(newFriend)
 
@@ -35,11 +32,19 @@ class MainActivity : AppCompatActivity() {
 
         val viewManager = LinearLayoutManager(this)
         val viewAdapter = FriendListAdapter(allFriends)
-        viewAdapter.setItemClickListener(
-            object: FriendListAdapter.ItemClickListener {
-                override fun onFriendDelete(view: View, position: Int) {
-                    val toRemove = viewAdapter.dataset[position]
-                    database.friendDao().deleteFriend(toRemove)
+        viewAdapter.setEventListener(
+            object: FriendListAdapter.EventListener {
+                override fun onFriendEdit(friend: Friend) {
+                    database.friendDao().updateFriend(friend)
+                    updateAdapter()
+                }
+
+                override fun onFriendDelete(friend: Friend) {
+                    database.friendDao().deleteFriend(friend)
+                    updateAdapter()
+                }
+
+                private fun updateAdapter() {
                     allFriends = database.friendDao().getAllFriends()
                     viewAdapter.updateData(allFriends)
                 }

@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class FriendListAdapter( friendList: List<Friend> ) :
     RecyclerView.Adapter<FriendListAdapter.ViewHolder>() {
 
-    var dataset: MutableList<Friend> = friendList.toMutableList()
+    private var dataset: MutableList<Friend> = friendList.toMutableList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater
@@ -20,11 +21,19 @@ class FriendListAdapter( friendList: List<Friend> ) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val friend = dataset[position]
-        holder.tvName.text = friend.firstName
-        holder.tvRating.text = friend.rating.toString()
-        holder.bButton.setOnClickListener {
-            onItemClickListener?.onFriendDelete(holder.itemView, position)
+        holder.tvName.setText( friend.firstName )
+        holder.tvRating.setText( friend.rating.toString() )
+
+        holder.bEdit.setOnClickListener {
+            val editFriend = Friend(
+                uid = dataset[position].uid,
+                firstName = holder.tvName.text.toString(),
+                rating = holder.tvRating.text.toString().toInt()
+            )
+            eventListener?.onFriendEdit(editFriend)
         }
+
+        holder.bRemove.setOnClickListener { eventListener?.onFriendDelete(dataset[position]) }
     }
 
     fun updateData( friendList: List<Friend> ) {
@@ -35,18 +44,20 @@ class FriendListAdapter( friendList: List<Friend> ) :
 
     override fun getItemCount() = dataset.size
 
-    private var onItemClickListener: ItemClickListener? = null
-    fun setItemClickListener(clickItemListener: ItemClickListener) {
-        onItemClickListener = clickItemListener
+    private var eventListener: EventListener? = null
+    fun setEventListener(eventListener: EventListener) {
+        this.eventListener = eventListener
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.findViewById<TextView>(R.id.tvName)!!
-        val tvRating = view.findViewById<TextView>(R.id.tvRating)!!
-        val bButton = view.findViewById<Button>(R.id.bRemove)!!
+        val tvName = view.findViewById<EditText>(R.id.tvName)!!
+        val tvRating = view.findViewById<EditText>(R.id.tvRating)!!
+        val bEdit = view.findViewById<Button>(R.id.bEdit)!!
+        val bRemove = view.findViewById<Button>(R.id.bRemove)!!
     }
 
-    interface ItemClickListener {
-        fun onFriendDelete(view: View, position: Int)
+    interface EventListener {
+        fun onFriendEdit(friend: Friend)
+        fun onFriendDelete(friend: Friend)
     }
 }
