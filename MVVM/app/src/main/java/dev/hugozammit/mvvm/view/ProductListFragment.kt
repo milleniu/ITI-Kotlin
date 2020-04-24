@@ -15,7 +15,6 @@ import dev.hugozammit.mvvm.viewmodel.ProductViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class ProductListFragment : Fragment() {
-
     private val productListModel: ProductViewModel by viewModel()
 
     override fun onCreateView(
@@ -23,36 +22,41 @@ class ProductListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(layout.fragment_vehicle_list, container, false)
+        return inflater.inflate(layout.fragment_product_list, container, false)
     }
 
     override fun onStart() {
         super.onStart()
 
         val recyclerView = view?.findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView!!.layoutManager = LinearLayoutManager(view!!.context, RecyclerView.VERTICAL, false)
+        recyclerView!!.layoutManager = LinearLayoutManager(
+            view!!.context,
+            RecyclerView.VERTICAL,
+            false
+        )
 
         productListModel.getProducts()
         productListModel.listOfProducts.observe(
             this,
             Observer(function = fun(productList: List<ProductFamily>?) {
                 productList?.let {
-
-                    val productListAdapter: ProductListAdapter = ProductListAdapter(productList)
+                    val productListAdapter = ProductListAdapter(productList)
                     recyclerView.adapter = productListAdapter
-                    productListAdapter.setItemClickListener(object :
-                        ProductListAdapter.ItemClickListener {
-                        override fun onItemClick(view: View, position: Int) {
-                            val newFragment = ProductDetailFragment.newInstance(productList[position])
-                            val transaction = fragmentManager!!.beginTransaction()
-                            transaction.replace(R.id.frag_container, newFragment)
-                            transaction.addToBackStack(null)
-                            transaction.commit()
-                        }
+
+                    productListAdapter.setItemClickListener(
+                        object : ProductListAdapter.ItemClickListener {
+                            override fun onItemClick(view: View, position: Int) {
+                                val newFragment = ProductDetailFragment
+                                    .newInstance(productList[position])
+                                val transaction = fragmentManager!!.beginTransaction()
+
+                                transaction.replace(R.id.frag_container, newFragment)
+                                transaction.addToBackStack(null)
+                                transaction.commit()
+                            }
                     })
                 }
             })
         )
     }
-
 }

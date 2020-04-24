@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RoomDatabase</string>
+    <string name="name">Nom</string>
+    <string name="rating">Note</string>
+</resources>

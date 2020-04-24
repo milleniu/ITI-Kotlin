@@ -10,25 +10,34 @@ import com.bumptech.glide.Glide
 import dev.hugozammit.mvvm.R
 import dev.hugozammit.mvvm.model.ProductFamily
 
-class ProductDetailAdapter(private val productFamily: ProductFamily)
-    : RecyclerView.Adapter<ProductDetailAdapter.ViewHolder>() {
+class ProductDetailAdapter(private val productFamily: ProductFamily) :
+    RecyclerView.Adapter<ProductDetailAdapter.ViewHolder>() {
 
     private var onItemClickListener: ItemClickListener? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, id: Int): ViewHolder {
-        val v = LayoutInflater.from(viewGroup?.context).inflate(R.layout.adapter_products_details, viewGroup, false)
-        return ViewHolder(v);
+        return ViewHolder(
+            LayoutInflater
+                .from(viewGroup.context)
+                .inflate(R.layout.adapter_product_details, viewGroup, false)
+        )
     }
 
     override fun getItemCount(): Int {
-        return productFamily.products.size;
+        return productFamily.products.size
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.name?.text = productFamily.products[position].name
-        viewHolder.count?.text = productFamily.products[position].description
-        val imageUrl = "http://mobcategories.s3-website-eu-west-1.amazonaws.com" + productFamily.products[position].url
-        Glide.with(viewHolder.imageView.context).load(imageUrl).into(viewHolder.imageView)
+        viewHolder.name.text = productFamily.products[position].name
+        viewHolder.count.text = productFamily.products[position].description
+
+        val imageUrl = "http://mobcategories.s3-website-eu-west-1.amazonaws.com" +
+                productFamily.products[position].url
+
+        Glide
+            .with(viewHolder.imageView.context)
+            .load(imageUrl)
+            .into(viewHolder.imageView)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -41,10 +50,6 @@ class ProductDetailAdapter(private val productFamily: ProductFamily)
                 onItemClickListener?.onItemClick(itemView, 0)
             }
         }
-    }
-
-    fun setItemClickListener(clickListener: ItemClickListener) {
-        onItemClickListener = clickListener
     }
 
     interface ItemClickListener {
