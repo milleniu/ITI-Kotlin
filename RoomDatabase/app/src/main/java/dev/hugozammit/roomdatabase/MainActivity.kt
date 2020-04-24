@@ -2,6 +2,7 @@ package dev.hugozammit.roomdatabase
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -21,40 +22,35 @@ class MainActivity : AppCompatActivity() {
             ).allowMainThreadQueries()
              .build()
 
-        // Register a new user every time we start the app
-        val newFriend = Friend(
-            firstName = UUID.randomUUID().toString().slice(0..12 ),
-            rating = 0
-        )
-        database.friendDao().insertFriend(newFriend)
-
         var allFriends = database.friendDao().getAllFriends()
 
         val viewManager = LinearLayoutManager(this)
         val viewAdapter = FriendListAdapter(allFriends)
+        fun refreshAdapter() = viewAdapter.updateData(database.friendDao().getAllFriends())
+
         viewAdapter.setEventListener(
             object: FriendListAdapter.EventListener {
                 override fun onFriendEdit(friend: Friend) {
                     database.friendDao().updateFriend(friend)
-                    updateAdapter()
+                    refreshAdapter()
                 }
 
                 override fun onFriendDelete(friend: Friend) {
                     database.friendDao().deleteFriend(friend)
-                    updateAdapter()
-                }
-
-                private fun updateAdapter() {
-                    allFriends = database.friendDao().getAllFriends()
-                    viewAdapter.updateData(allFriends)
+                    refreshAdapter()
                 }
             }
         )
 
-        findViewById<RecyclerView>(R.id.recylerView).apply {
+        findViewById<RecyclerView>(R.id.recyclerView).apply {
                 setHasFixedSize(true)
                 layoutManager = viewManager
                 adapter = viewAdapter
+        }
+
+        findViewById<Button>(R.id.bAdd).setOnClickListener {
+            database.friendDao().insertFriend(Friend(firstName = "", rating = 0))
+            refreshAdapter()
         }
     }
 }
