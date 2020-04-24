@@ -6,6 +6,7 @@ import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 import kotlin.random.Random
 
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 adapter = viewAdapter
         }
 
-        findViewById<Button>(R.id.bAdd).setOnClickListener {
+        findViewById<FloatingActionButton>(R.id.bAdd).setOnClickListener {
             database.friendDao().insertFriend(Friend(firstName = "", rating = 0))
             refreshAdapter()
         }
